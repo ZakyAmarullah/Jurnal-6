@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net.Http.Headers;
 class SayaTubeUser
 {
     private int id;
@@ -41,6 +42,15 @@ class SayaTubeVideo
 
     public SayaTubeVideo(string title)
     {
+        if (string.IsNullOrEmpty(title))
+        {
+            throw new ArgumentException("Judul tidak boleh kosong");
+        }
+
+        if(title.Length > 200)
+        {
+            throw new ArgumentException("Judul tdak boleh dari 200 karakter");
+        }
         Random random = new Random();
         this.id = random.Next(10000, 999999);
         this.title = title;
@@ -49,6 +59,27 @@ class SayaTubeVideo
 
     public void IncreasePlayCount(int count)
     {
+        if (count < 0)
+        {
+            throw new ArgumentException("Play count tidak boleh negatif");
+        }
+
+        if (count > 25000000)
+        {
+            throw new ArgumentException("Play count tidak boleh lebih dari 25 juta");
+        }
+
+        try
+        {
+            checked
+            {
+                this.playCount += count;
+            }
+        }
+        catch (OverflowException)
+        {
+            throw new OverflowException("Jumlah ccount tidak boleh lebih dari batas maksimum");
+        }
         playCount += count;
     }
 
@@ -62,7 +93,7 @@ class SayaTubeVideo
 
 class Program
 {
-    public void main()
+    public void Main()
     {
         SayaTubeUser user = new SayaTubeUser("Zaky");
 
